@@ -153,7 +153,7 @@ export function SupportChat() {
             </form>
             {attachedFile && (
               <p className="mt-2 text-sm text-gray-600">
-                Attached File: <strong>{attachedFile.name}</strong>
+                Attached Files: <strong>{attachedFile.name}</strong>
               </p>
             )}
           </div>
