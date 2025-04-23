@@ -32,8 +32,8 @@ const menuItems: MenuItem[] = [
   { icon: Archive, label: "Stocks", href: "/stock" },
   { icon: User, label: "Accounts", href: "/accounts" },
   // { icon: BotMessageSquare, label: "Support Genie", href: "/supportGenie" },
-  { icon: ListOrdered, label: "Orders", href: "/orders" },
-  { icon: BarChart3, label: "Reports", href: "/reports" },
+  // { icon: ListOrdered, label: "Orders", href: "/orders" },
+  // { icon: BarChart3, label: "Reports", href: "/reports" },
   { icon: Settings, label: "Settings", href: "/settings" },
 ];
 
