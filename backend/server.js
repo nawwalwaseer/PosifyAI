@@ -1,9 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser');
-const dashboardRoutes = require('./routes/dashbord');
 const cors = require('cors');
-require('dotenv').config();
+
+
+// Import Routes
+const authRoutes = require('./routes/authRoutes');
+const signupRoutes = require('./routes/signup');
+const dashboardRoutes = require('./routes/dashbord');  // Import the updated dashboard route
 
 const app = express();
 
@@ -15,13 +20,10 @@ app.use(cookieParser());
 // Connect to the database
 connectDB();
 
-// Routes
-const authRoutes = require('./routes/authRoutes');
-const signupRoutes = require('./routes/signup');
-
 // Use Routes
 app.use('/api', authRoutes);
 app.use('/api', signupRoutes);
+app.use('/api/dashboard', dashboardRoutes);  // Use the dashboard route
 
 // Root Route (Just a check to ensure the server is running)
 app.get('/', (req, res) => {
