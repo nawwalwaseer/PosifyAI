@@ -9,6 +9,9 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const signupRoutes = require('./routes/signup');
 const dashboardRoutes = require('./routes/dashbord');  // Import the updated dashboard route
+const customersRoutes = require('./routes/customers');
+const salesRoutes = require('./routes/salesRoute');
+const stockRoutes = require('./routes/stockRoute'); 
 
 const app = express();
 
@@ -23,7 +26,11 @@ connectDB();
 // Use Routes
 app.use('/api', authRoutes);
 app.use('/api', signupRoutes);
-app.use('/api/dashboard', dashboardRoutes);  // Use the dashboard route
+app.use('/api', dashboardRoutes);  // Use the dashboard route
+app.use('/api', customersRoutes);
+app.use('/api', salesRoutes);
+app.use('/api', stockRoutes);
+
 
 // Root Route (Just a check to ensure the server is running)
 app.get('/', (req, res) => {

@@ -1,20 +1,26 @@
-
-
-import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-
-const data = [
-  { month: "Jan", loyal: 10, new: 8, unique: 12 },
-  { month: "Feb", loyal: 15, new: 10, unique: 14 },
-  { month: "Mar", loyal: 12, new: 12, unique: 15 },
-  { month: "Apr", loyal: 18, new: 14, unique: 16 },
-  { month: "May", loyal: 14, new: 16, unique: 18 },
-  { month: "Jun", loyal: 16, new: 15, unique: 14 },
-  { month: "Jul", loyal: 15, new: 14, unique: 16 },
-]
+import { useEffect, useState } from "react";
+import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import axios from "axios";
 
 export function VisitorInsights() {
+  const [visitorData, setVisitorData] = useState([]);
+
+  useEffect(() => {
+    const fetchVisitorData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/dashboard");
+        const dataFromDB = response.data.visitorInsights;
+        setVisitorData(dataFromDB);
+      } catch (error) {
+        console.error("Failed to fetch visitor insights:", error);
+      }
+    };
+
+    fetchVisitorData();
+  }, []);
+
   return (
     <Card>
       <CardHeader>
@@ -39,7 +45,7 @@ export function VisitorInsights() {
           className="h-[300px] w-[380px] mr-8 "
         >
           <ResponsiveContainer width="100%" height="100%" className='mr-28'>
-            <LineChart data={data}>
+            <LineChart data={visitorData}>
               <XAxis dataKey="month" />
               <YAxis />
               <ChartTooltip content={<ChartTooltipContent />} />
@@ -51,6 +57,5 @@ export function VisitorInsights() {
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }
-

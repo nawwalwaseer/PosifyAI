@@ -1,87 +1,51 @@
-
+import { useEffect, useState } from "react"
 import { Copy, FileText, Printer } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-const stockData = [
-  {
-    id: "01",
-    productName: "Copymate A4",
-    model: "2424",
-    salePrice: "1100Rs",
-    purchasePrice: "900Rs",
-    inQty: "900",
-    outQty: "900",
-    stock: "0",
-    stockSalePrice: "0",
-    stockPurchase: "0",
-  },
-  {
-    id: "02",
-    productName: "Dollar Ink",
-    model: "2424",
-    salePrice: "100Rs",
-    purchasePrice: "70Rs",
-    inQty: "700",
-    outQty: "600",
-    stock: "100",
-    stockSalePrice: "10000Rs.",
-    stockPurchase: "7000Rs.",
-  },
-  {
-    id: "03",
-    productName: "Double A",
-    model: "2425",
-    salePrice: "1000Rs",
-    purchasePrice: "700Rs",
-    inQty: "600",
-    outQty: "600",
-    stock: "0",
-    stockSalePrice: "0",
-    stockPurchase: "0",
-  },
-  {
-    id: "04",
-    productName: "Domicila cover",
-    model: "2025",
-    salePrice: "400Rs",
-    purchasePrice: "300Rs",
-    inQty: "350",
-    outQty: "200",
-    stock: "150",
-    stockSalePrice: "60000Rs.",
-    stockPurchase: "52000Rs.",
-  },
-  {
-    id: "05",
-    productName: "Photo paper",
-    model: "2023",
-    salePrice: "800Rs",
-    purchasePrice: "600Rs",
-    inQty: "400",
-    outQty: "400",
-    stock: "0",
-    stockSalePrice: "0",
-    stockPurchase: "0",
-  },
-]
-
 export function StockReport() {
+  type StockItem = {
+    id: string
+    productName: string
+    model: string
+    salePrice: string
+    purchasePrice: string
+    inQty: string
+    outQty: string
+    stock: string
+    stockSalePrice: string
+    stockPurchase: string
+  }
+
+
+  const [stockData, setStockData] = useState<StockItem[]>([])
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/stock") // ✅ replace with your actual backend URL if needed
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.stock) {
+          setStockData(data.stock)
+        }
+      })
+      .catch((error) => console.error("Error fetching stock data:", error))
+  }, [])
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-blue-900">Stock Report</CardTitle>
         <div className="flex gap-2">
-          <Button variant="outline" className="bg-green-600 text-white hover:bg-green-700 hover:text-white rounded-full transform hover:scale-110 transition-all duration-300 ">
+          <Button variant="outline" className="bg-green-600 text-white hover:bg-green-700 hover:text-white rounded-full transform hover:scale-110 transition-all duration-300">
             <Copy className="mr-2 h-4 w-4" />
             Copy
           </Button>
-          <Button variant="outline" className="bg-green-600 text-white hover:bg-green-700 hover:text-white rounded-full transform hover:scale-110 transition-all duration-300 ">
+          <Button variant="outline" className="bg-green-600 text-white hover:bg-green-700 hover:text-white rounded-full transform hover:scale-110 transition-all duration-300">
             <FileText className="mr-2 h-4 w-4" />
             PDF
           </Button>
-          <Button variant="outline" className="bg-green-600 text-white hover:bg-green-700 hover:text-white rounded-full transform hover:scale-110 transition-all duration-300 ">
+          <Button variant="outline" className="bg-green-600 text-white hover:bg-green-700 hover:text-white rounded-full transform hover:scale-110 transition-all duration-300">
             <Printer className="mr-2 h-4 w-4" />
             Print
           </Button>
@@ -105,9 +69,9 @@ export function StockReport() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {stockData.map((item) => (
+              {stockData.map((item, index) => (
                 <TableRow key={item.id}>
-                  <TableCell>{item.id}</TableCell>
+                  <TableCell>{index + 1}</TableCell>
                   <TableCell>{item.productName}</TableCell>
                   <TableCell>{item.model}</TableCell>
                   <TableCell className="text-red-500">{item.salePrice}</TableCell>
@@ -119,14 +83,7 @@ export function StockReport() {
                   <TableCell>{item.stockPurchase}</TableCell>
                 </TableRow>
               ))}
-              <TableRow>
-                <TableCell colSpan={7} className="text-right font-bold text-blue-900">
-                  Total
-                </TableCell>
-                <TableCell className="font-bold text-blue-900">250</TableCell>
-                <TableCell className="font-bold text-green-500">70000Rs.</TableCell>
-                <TableCell className="font-bold text-red-500">59000Rs.</TableCell>
-              </TableRow>
+              {/* You can add logic for totals here if needed */}
             </TableBody>
           </Table>
         </div>
@@ -134,4 +91,3 @@ export function StockReport() {
     </Card>
   )
 }
-

@@ -1,12 +1,12 @@
-
-import { Eye, FileEdit, Printer, Trash2 } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from 'react';
+import { Eye, FileEdit, Printer, Trash2 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -14,65 +14,69 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import axios from 'axios';
 
-const sales = [
-  {
-    id: "01",
-    invoiceNo: "0010",
-    salesBy: "Arham",
-    customerName: "Mishba",
-    date: "09/09/24",
-    totalAmount: "5000 RS",
-  },
-  {
-    id: "02",
-    invoiceNo: "0110",
-    salesBy: "Hameel",
-    customerName: "Hassaan",
-    date: "09/10/24",
-    totalAmount: "15000 RS",
-  },
-  {
-    id: "03",
-    invoiceNo: "0114",
-    salesBy: "Arham",
-    customerName: "Jasid",
-    date: "07/10/24",
-    totalAmount: "5000 RS",
-  },
-]
+interface Sale {
+  id: string;
+  invoiceNo: string;
+  salesBy: string;
+  customerName: string;
+  date: string;
+  totalAmount: string;
+}
 
 export function SalesTable() {
+  const [sales, setSales] = useState<Sale[]>([]);
+
+  useEffect(() => {
+    const fetchSalesData = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/sales'); // Add the full URL here
+        setSales(response.data.sales);
+      } catch (error) {
+        console.error('Error fetching sales:', error);
+      }
+    };
+
+    fetchSalesData();
+  }, []);
+
+  // Calculate total amount dynamically
+  const totalAmount = sales.reduce((acc, sale) => {
+    const amount = parseInt(sale.totalAmount.replace(/\D/g, ""), 10) || 0;
+    return acc + amount;
+  }, 0);
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className='text-blue-900'>Manage Sale</CardTitle>
+        <CardTitle className="text-blue-900">Manage Sale</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className='text-blue-900 text-center'>SL</TableHead>
-              <TableHead className=' text-blue-900 text-center'>Invoice No</TableHead>
-              <TableHead className='text-blue-900 text-center'>Sales By</TableHead>
-              <TableHead className='text-blue-900 text-center'>Customer Name</TableHead>
-              <TableHead className='text-blue-900 text-center'>Date</TableHead>
-              <TableHead className='text-blue-900 text-center'>Total.Amount</TableHead>
-              <TableHead className='text-blue-900 text-center'>Action</TableHead>
+              <TableHead className="text-blue-900 text-center">SL</TableHead>
+              <TableHead className="text-blue-900 text-center">Invoice No</TableHead>
+              <TableHead className="text-blue-900 text-center">Sales By</TableHead>
+              <TableHead className="text-blue-900 text-center">Customer Name</TableHead>
+              <TableHead className="text-blue-900 text-center">Date</TableHead>
+              <TableHead className="text-blue-900 text-center">Total Amount</TableHead>
+              <TableHead className="text-blue-900 text-center">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sales.map((sale) => (
+            {sales.map((sale, index) => (
               <TableRow key={sale.id}>
-                <TableCell>{sale.id}</TableCell>
-                <TableCell>{sale.invoiceNo}</TableCell>
-                <TableCell>{sale.salesBy}</TableCell>
-                <TableCell>{sale.customerName}</TableCell>
-                <TableCell>{sale.date}</TableCell>
-                <TableCell>{sale.totalAmount}</TableCell>
-                <TableCell>
-                  <div className="flex gap-1">
+                <TableCell className="text-center">{index + 1}</TableCell>
+                <TableCell className="text-center">{sale.invoiceNo}</TableCell>
+                <TableCell className="text-center">{sale.salesBy}</TableCell>
+                <TableCell className="text-center">{sale.customerName}</TableCell>
+                <TableCell className="text-center">{sale.date}</TableCell>
+                <TableCell className="text-center">{sale.totalAmount}</TableCell>
+                <TableCell className="text-center">
+                  <div className="flex justify-center gap-1">
                     <Button size="icon" variant="ghost">
                       <Eye className="h-4 w-4" />
                     </Button>
@@ -91,11 +95,13 @@ export function SalesTable() {
             ))}
           </TableBody>
         </Table>
+
         <div className="mt-4 text-right">
-          <p className="font-semibold text-blue-900">Total Amount: <span className="text-black">25,000 RS</span></p>
+          <p className="font-semibold text-blue-900">
+            Total Amount: <span className="text-black">{totalAmount.toLocaleString()} RS</span>
+          </p>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-

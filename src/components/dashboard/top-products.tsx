@@ -1,14 +1,34 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import axios from "axios";
 
-const products = [
-  { id: "01", name: "Piano Gel", popularity: 45, sales: "45k" },
-  { id: "02", name: "Click Sky", popularity: 29, sales: "29k" },
-  { id: "03", name: "A Star", popularity: 18, sales: "18k" },
-  { id: "04", name: "Fineliner", popularity: 25, sales: "25k" },
-]
+// 👇 Define the product type
+interface Product {
+  id: string;
+  name: string;
+  popularity: number;
+  sales: string;
+}
 
 export function TopProducts() {
+  // 👇 Tell useState we expect an array of Product
+  const [topProducts, setTopProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchTopProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/dashboard");
+        const dataFromDB = response.data.topProducts;
+        setTopProducts(dataFromDB);
+      } catch (error) {
+        console.error("Failed to fetch top products:", error);
+      }
+    };
+
+    fetchTopProducts();
+  }, []);
+
   return (
     <Card>
       <CardHeader>
@@ -16,7 +36,7 @@ export function TopProducts() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {products.map((product) => (
+          {topProducts.map((product) => (
             <div key={product.id} className="flex items-center gap-4">
               <span className="text-sm text-muted-foreground">{product.id}</span>
               <div className="flex-1">
@@ -29,6 +49,5 @@ export function TopProducts() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-

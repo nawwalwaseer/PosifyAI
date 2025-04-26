@@ -1,6 +1,7 @@
 import {  BarChart2, Package, ShoppingCart } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
+
 export function SalesSummary() {
   return (
     <div className="grid gap-4 md:grid-cols-3">

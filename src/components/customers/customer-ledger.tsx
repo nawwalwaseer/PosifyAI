@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
+import axios from "axios"; // Import Axios
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -11,37 +13,27 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-
-const transactions = [
-  {
-    date: "09/09/24",
-    description: "Mishba (Counter sale)",
-    voucherNo: "0010",
-    debit: "0 RS",
-    credit: "5000 RS",
-    balance: "5000 RS",
-  },
-  {
-    date: "09/10/24",
-    description: "Hassaan (LHR retail store)",
-    voucherNo: "0110",
-    debit: "15000 RS",
-    credit: "0 RS",
-    balance: "15000 RS",
-  },
-  {
-    date: "07/10/24",
-    description: "Jasid (scheme sale)",
-    voucherNo: "0114",
-    debit: "0 RS",
-    credit: "5000 RS",
-    balance: "5000 RS",
-  },
-]
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 export function CustomerLedger() {
+  const [transactions, setTransactions] = useState<any[]>([]); // State to hold the fetched transactions
+
+  useEffect(() => {
+    const fetchCustomerData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/customers");
+        const data = response.data;
+        setTransactions(data.customerLedger || []);
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+  
+    fetchCustomerData();
+  }, []);
+  
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -85,95 +77,5 @@ export function CustomerLedger() {
         </Table>
       </CardContent>
     </Card>
-  )
+  );
 }
-
-// import {
-//   Card,
-//   CardContent,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card"
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table"
-// import { Button } from "@/components/ui/button"
-
-// const transactions = [
-//   {
-//     date: "09/09/24",
-//     description: "Mishba (Counter sale)",
-//     voucherNo: "0010",
-//     debit: "0 RS",
-//     credit: "5000 RS",
-//     balance: "5000 RS",
-//   },
-//   {
-//     date: "09/10/24",
-//     description: "Hassaan (LHR retail store)",
-//     voucherNo: "0110",
-//     debit: "15000 RS",
-//     credit: "0 RS",
-//     balance: "15000 RS",
-//   },
-//   {
-//     date: "07/10/24",
-//     description: "Jasid (scheme sale)",
-//     voucherNo: "0114",
-//     debit: "0 RS",
-//     credit: "5000 RS",
-//     balance: "5000 RS",
-//   },
-// ]
-
-// export function CustomerLedger() {
-//   return (
-//     <Card>
-//       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-//         <CardTitle className="text-xl font-bold">Customer Ledger</CardTitle>
-//         <div className="flex gap-2">
-//           <Button variant="outline">Manage Customer</Button>
-//           <Button variant="outline">Credit Customer</Button>
-//           <Button variant="outline">Paid Customer</Button>
-//         </div>
-//       </CardHeader>
-//       <CardContent>
-//         <Table className="overflow-x-auto"> {/* Ensures table doesn't overflow */}
-//           <TableHeader>
-//             <TableRow>
-//               <TableHead>Date</TableHead>
-//               <TableHead>Description</TableHead>
-//               <TableHead>Voucher no.</TableHead>
-//               <TableHead>Debit</TableHead>
-//               <TableHead>Credit</TableHead>
-//               <TableHead>Balance</TableHead>
-//             </TableRow>
-//           </TableHeader>
-//           <TableBody>
-//             {transactions.map((transaction) => (
-//               <TableRow key={transaction.voucherNo}>
-//                 <TableCell>{transaction.date}</TableCell>
-//                 <TableCell>{transaction.description}</TableCell>
-//                 <TableCell>{transaction.voucherNo}</TableCell>
-//                 <TableCell>{transaction.debit}</TableCell>
-//                 <TableCell>{transaction.credit}</TableCell>
-//                 <TableCell>{transaction.balance}</TableCell>
-//               </TableRow>
-//             ))}
-//             <TableRow className="font-bold">
-//               <TableCell colSpan={3}>Grand Total</TableCell>
-//               <TableCell>15000 RS</TableCell>
-//               <TableCell>10,000 RS</TableCell>
-//               <TableCell className="text-red-500">25,000 RS</TableCell>
-//             </TableRow>
-//           </TableBody>
-//         </Table>
-//       </CardContent>
-//     </Card>
-//   )
-// }
