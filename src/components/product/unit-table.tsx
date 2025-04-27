@@ -1,22 +1,29 @@
-import { FileEdit, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useEffect, useState } from "react";
+import { FileEdit, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-const units = [
-  {
-    id: "1",
-    name: "Price",
-    status: "Active",
-  },
-  {
-    id: "2",
-    name: "Qnty",
-    status: "Active",
-  },
-]
+interface Product {
+  id: string;
+  name: string;
+  status: string;
+}
 
 export function UnitTable() {
+  const [units, setUnits] = useState<Product[]>([]);
+
+  // Fetch the units data from the backend
+  useEffect(() => {
+    const fetchUnits = async () => {
+      const response = await fetch("http://localhost:5000/api/products");
+      const data = await response.json();
+      setUnits(data[0]?.products || []);  // Assuming you always get one object with 'products' array
+    };
+
+    fetchUnits();
+  }, []);
+
   return (
     <Card>
       <CardHeader>
@@ -54,6 +61,5 @@ export function UnitTable() {
         </Table>
       </CardContent>
     </Card>
-  )
+  );
 }
-

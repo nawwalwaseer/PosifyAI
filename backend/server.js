@@ -12,6 +12,10 @@ const dashboardRoutes = require('./routes/dashbord');  // Import the updated das
 const customersRoutes = require('./routes/customers');
 const salesRoutes = require('./routes/salesRoute');
 const stockRoutes = require('./routes/stockRoute'); 
+const voucherRoutes = require('./routes/voucher')
+const productRoutes = require("./routes/products");
+
+
 
 const app = express();
 
@@ -30,6 +34,10 @@ app.use('/api', dashboardRoutes);  // Use the dashboard route
 app.use('/api', customersRoutes);
 app.use('/api', salesRoutes);
 app.use('/api', stockRoutes);
+app.use('/api', voucherRoutes);
+app.use("/api", productRoutes);
+
+
 
 
 // Root Route (Just a check to ensure the server is running)

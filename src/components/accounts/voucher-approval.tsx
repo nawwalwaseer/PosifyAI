@@ -1,37 +1,37 @@
+import { useEffect, useState } from "react";
+import { Copy, FileEdit, Printer, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-import { Copy, FileEdit, Printer, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-
-const vouchers = [
-  {
-    id: "01",
-    voucherNo: "CR2145",
-    date: "12/1/25",
-    remark: "Stock",
-    debit: "10,000,000 Rs",
-    credit: "0 Rs",
-  },
-  {
-    id: "02",
-    voucherNo: "CQ2145",
-    date: "12/1/25",
-    remark: "Stock",
-    debit: "0 Rs",
-    credit: "20,000,000 Rs",
-  },
-  {
-    id: "03",
-    voucherNo: "CQ220M",
-    date: "12/1/25",
-    remark: "Stock",
-    debit: "12,000,000 Rs",
-    credit: "0 Rs",
-  },
-]
+// Define the Voucher type
+interface Voucher {
+  id: string;
+  voucherNo: string;
+  date: string;
+  remark: string;
+  debit: string;
+  credit: string;
+}
 
 export function VoucherApproval() {
+  const [vouchers, setVouchers] = useState<Voucher[]>([]);
+
+  useEffect(() => {
+    // Fetch voucher data from the API when the component mounts
+    const fetchVouchers = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/vouchers");
+        const data = await response.json();
+        setVouchers(data); // Set the fetched data into state
+      } catch (error) {
+        console.error("Error fetching voucher data:", error);
+      }
+    };
+
+    fetchVouchers(); // Call the fetch function
+  }, []); // Empty dependency array means this effect runs once when the component mounts
+
   return (
     <Card className="border-none shadow-none">
       <CardHeader className="flex flex-row items-center justify-between px-0 pt-0">
@@ -94,6 +94,5 @@ export function VoucherApproval() {
         </Table>
       </CardContent>
     </Card>
-  )
+  );
 }
-
