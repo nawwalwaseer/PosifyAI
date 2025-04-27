@@ -13,12 +13,7 @@ const ErrorPage: React.FC = () => {
           Sorry, the page you’re looking for doesn’t exist.
         </p>
         <div className="mt-6 flex justify-center gap-4">
-          <Link
-            to="/dashboard"
-            className="inline-block rounded-lg bg-blue-600 px-6 py-3 text-lg font-medium text-white shadow-md hover:bg-blue-700 focus:ring focus:ring-blue-300"
-          >
-            Dashboard
-          </Link>
+
           <Link
             to="/"
             className="inline-block rounded-lg bg-blue-600 px-6 py-3 text-lg font-medium text-white shadow-md hover:bg-blue-700 focus:ring focus:ring-blue-300"

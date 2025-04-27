@@ -1,124 +1,89 @@
 // routes/signup.js
-const express = require("express");
-const bcrypt = require("bcryptjs");
-const User = require("../models/User");
-
+const express = require('express');
 const router = express.Router();
+const SignupData = require('../models/SignupData');
 
-router.post("/signup", async (req, res) => {
+// POST route for signup
+router.post('/signup', async (req, res) => {
+  const { firstName, lastName, email, businessName, phone } = req.body;
+
+  // Check if all fields are provided
+  if (!firstName || !lastName || !email || !businessName || !phone) {
+    return res.status(400).json({ message: 'Please fill all required fields' });
+  }
+
   try {
-    const {
+    // Check if the email already exists
+    const existingUser = await SignupData.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email is already taken' });
+    }
+
+    // Create a new SignupData document
+    const newSignupData = new SignupData({
       firstName,
       lastName,
       email,
-      password,
-      address,
-      phone,
       businessName,
-      category,
-      billingInfo,
-    } = req.body;
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "Email already registered" });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new User({
-      firstName,
-      lastName,
-      email,
-      password: hashedPassword,
-      address,
       phone,
-      businessName,
-      category,
-      billingInfo,
     });
 
-    await newUser.save();
-    res.status(201).json({ message: "User registered successfully" });
+    // Save the new signup data to the database
+    await newSignupData.save();
+
+    res.status(201).json({ message: 'Signup successful!' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Signup failed. Try again." });
+    res.status(500).json({ message: 'Error saving data' });
   }
 });
 
 module.exports = router;
 
-//********************************UPDATED ROUTE FOR SAVING ALL THE DATA**********************************/
-// const express = require('express');
-// const router = express.Router();
-// const SignupData = require('../models/SignupData'); // your full signup details model
-// const User = require('../models/User'); // your login auth model
-// const bcrypt = require('bcryptjs');
 
+// // routes/signup.js
+// const express = require('express');
+// const bcrypt = require('bcryptjs');
+// const SignupData = require('../models/SignupData'); // Use SignupData model
+// const router = express.Router();
+
+// // Signup route to handle POST request
 // router.post('/signup', async (req, res) => {
 //   try {
-//     const {
+//     console.log(req.body)
+//     const { firstName, lastName, email,password, phone, businessName } = req.body;
+
+//     // Validation check for required fields
+//     if (!firstName || !lastName || !email || !password || !phone || !businessName) {
+//       return res.status(400).json({ message: 'Please fill all required fields' });
+//     }
+
+//     // Check if the user already exists (by email)
+//     const existingUser = await SignupData.findOne({ email });
+//     if (existingUser) {
+//       return res.status(400).json({ message: 'Email already registered' });
+//     }
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // Create new user
+//     const newUser = new SignupData({
 //       firstName,
 //       lastName,
-//       email,
-//       password,
-//       confirmPassword,
-//       address,
-//       businessName,
-//       category,
-//       phoneNumber,
-//       billingName,
-//       billingCardNumber,
-//       billingExpiry,
-//       billingCVV,
-//     } = req.body;
-
-//     // Validation
-//     if (!email || !password || !confirmPassword || !firstName || !lastName || !address || !businessName || !category || !phoneNumber || !billingName || !billingCardNumber || !billingExpiry || !billingCVV) {
-//       return res.status(400).json({ message: "Please fill all required fields" });
-//     }
-
-//     if (password !== confirmPassword) {
-//       return res.status(400).json({ message: "Passwords do not match" });
-//     }
-
-//     const existingUser = await User.findOne({ email });
-//     if (existingUser) {
-//       return res.status(400).json({ message: "User already exists" });
-//     }
-
-//     // Hash password
-//     const salt = await bcrypt.genSalt(10);
-//     const hashedPassword = await bcrypt.hash(password, salt);
-
-//     // Save basic user login
-//     const newUser = new User({
 //       email,
 //       password: hashedPassword,
+//       phone,
+//       businessName,
 //     });
+
+//     // Save the user to the database
 //     await newUser.save();
 
-//     // Save all signup data
-//     const signupData = new SignupData({
-//       firstName,
-//       lastName,
-//       email,
-//       password: hashedPassword, // Store hashed password
-//       address,
-//       businessName,
-//       category,
-//       phoneNumber,
-//       billingInfo: {
-//         billingName,
-//         billingCardNumber,
-//         billingExpiry,
-//         billingCVV,
-//       },
-//     });
-//     await signupData.save();
-
-//     res.status(201).json({ message: "User signed up successfully" });
-//   } catch (error) {
-//     console.error("Signup Error:", error);
-//     res.status(500).json({ message: "Internal server error" });
+//     // Send success response
+//     res.status(201).json({ message: 'User registered successfully' });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: 'Signup failed. Try again.' });
 //   }
 // });
 
