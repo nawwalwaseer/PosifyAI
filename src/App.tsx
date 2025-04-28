@@ -17,14 +17,16 @@ import MoreAccountsPage from "./pages/moreAccountsPage"
 import SupportPage from "./pages/supportPage"
 import SaleInvoicePage from "./pages/posPage"
 
+import LockCurrentRoute from "./components/LockCurrentRoute";
+
 function App() {
   
 
   return (
     <>
     <Routes>
-      <Route path="/"  element={<LoginPage/>}/>
-      <Route path="/signup" element={<SignUpPage/>}/>
+    
+
       <Route path="/dashboard" element={<DashboardPage/>}/>
       <Route path="/customers" element={<CustomersPage/>}/>
       <Route path="/purchase" element={<PurchasePage/>}/>
@@ -38,8 +40,10 @@ function App() {
       <Route path='/moreAccounts' element={<MoreAccountsPage/>} />
       <Route path='/supportGenie' element={<SupportPage/>} />
       <Route path='/pos' element={<SaleInvoicePage/>} />
-      
 
+    
+      <Route path="/"  element={<LoginPage/>}/>
+      <Route path="/signup" element={<SignUpPage/>}/>
       <Route path="*" element={<ErrorPage/>}></Route>
     </Routes>
    

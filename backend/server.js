@@ -14,6 +14,8 @@ const salesRoutes = require('./routes/salesRoute');
 const stockRoutes = require('./routes/stockRoute'); 
 const voucherRoutes = require('./routes/voucher')
 const productRoutes = require("./routes/products");
+const userDetailsRoute = require('./routes/userDetails'); // Add the new route
+
 
 
 
@@ -36,6 +38,7 @@ app.use('/api', salesRoutes);
 app.use('/api', stockRoutes);
 app.use('/api', voucherRoutes);
 app.use("/api", productRoutes);
+app.use('/api', userDetailsRoute);
 
 
 
