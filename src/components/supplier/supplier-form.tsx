@@ -1,8 +1,7 @@
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import axios from "axios" // Import axios for making API calls
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -44,21 +44,55 @@ export function SupplierForm() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  const [error, setError] = useState<string | null>(null) // State for error handling
+  const [success, setSuccess] = useState<string | null>(null) // State for success message
+
+  // Function to handle form submission
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setError(null) // Reset error message
+    setSuccess(null) // Reset success message
+
+    try {
+      // Send a POST request to the backend to save the supplier data
+      const response = await axios.post("http://localhost:5000/api/suppliers", values)
+
+      // Handle successful response
+      setSuccess("Supplier added successfully!")
+      console.log("Supplier saved:", response.data)
+
+      // Optionally, reset the form after successful submission
+      form.reset()
+
+    } catch (err: any) {
+      // Handle errors (e.g., supplier already exists)
+      if (err.response && err.response.status === 400) {
+        setError(err.response.data.message) // Show the error message from the backend
+      } else {
+        setError("An error occurred. Please try again.") // Generic error message
+      }
+    }
   }
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl font-bold text-blue-900">Add Supplier</CardTitle>
-        <Button type="submit" form="supplier-form" className="w-[80px]  px-4 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-full transform hover:scale-110 transition-all duration-300">
+        <Button
+          type="submit"
+          form="supplier-form"
+          className="w-[80px] px-4 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-full transform hover:scale-110 transition-all duration-300"
+        >
           Save
         </Button>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form id="supplier-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            id="supplier-form"
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
+            {/* Name field */}
             <FormField
               control={form.control}
               name="name"
@@ -72,6 +106,8 @@ export function SupplierForm() {
                 </FormItem>
               )}
             />
+
+            {/* Email field */}
             <FormField
               control={form.control}
               name="email"
@@ -85,6 +121,8 @@ export function SupplierForm() {
                 </FormItem>
               )}
             />
+
+            {/* Phone field */}
             <FormField
               control={form.control}
               name="phone"
@@ -98,6 +136,8 @@ export function SupplierForm() {
                 </FormItem>
               )}
             />
+
+            {/* Address field */}
             <FormField
               control={form.control}
               name="address"
@@ -111,6 +151,8 @@ export function SupplierForm() {
                 </FormItem>
               )}
             />
+
+            {/* City field */}
             <FormField
               control={form.control}
               name="city"
@@ -124,6 +166,8 @@ export function SupplierForm() {
                 </FormItem>
               )}
             />
+
+            {/* State field */}
             <FormField
               control={form.control}
               name="state"
@@ -137,6 +181,8 @@ export function SupplierForm() {
                 </FormItem>
               )}
             />
+
+            {/* Country field */}
             <FormField
               control={form.control}
               name="country"
@@ -152,8 +198,13 @@ export function SupplierForm() {
             />
           </form>
         </Form>
+
+        {/* Show error message if any */}
+        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+
+        {/* Show success message if any */}
+        {success && <div className="text-green-500 text-sm mt-2">{success}</div>}
       </CardContent>
     </Card>
   )
 }
-

@@ -1,57 +1,50 @@
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
+import "leaflet/dist/leaflet.css"
+import L from "leaflet"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+// Fix default icon issue in Leaflet for React
+delete (L.Icon.Default.prototype as any)._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png",
+})
+
+const suppliers = [
+  {
+    name: "Karachi Supplier",
+    location: [24.8607, 67.0011], // [lat, lon]
+  },
+  {
+    name: "Lahore Supplier",
+    location: [31.5497, 74.3436],
+  },
+]
 
 export function SupplierMap() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-blue-900">Supplier Mapping by Country</CardTitle>
+        <CardTitle className="text-blue-900">Supplier Mapping - Pakistan</CardTitle>
       </CardHeader>
       <CardContent>
-        <svg
-          viewBox="0 0 1000 500"
-          className="h-full w-full"
-          style={{ minHeight: "300px" }}
+        <MapContainer
+          center={[30.3753, 69.3451]} // Center of Pakistan
+          zoom={5.5}
+          scrollWheelZoom={false}
+          style={{ height: "400px", width: "100%" }}
         >
-          <title >World Map with Supplier Mapping</title> 
-
-          
-          <path
-            d="M 200 120 L 300 120 L 300 200 L 200 200 Z"
-            fill="#FFD700"
-            className="opacity-70 hover:opacity-100 transition-opacity"
-            aria-label="North America"
+          <TileLayer
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <path
-            d="M 250 250 L 350 250 L 350 350 L 250 350 Z"
-            fill="#FF6B6B"
-            className="opacity-70 hover:opacity-100 transition-opacity"
-            aria-label="South America" 
-          />
-          <path
-            d="M 400 150 L 500 150 L 500 250 L 400 250 Z"
-            fill="#4ECDC4"
-            className="opacity-70 hover:opacity-100 transition-opacity"
-            aria-label="Europe" 
-          />
-          <path
-            d="M 550 200 L 650 200 L 650 300 L 550 300 Z"
-            fill="#9B59B6"
-            className="opacity-70 hover:opacity-100 transition-opacity"
-            aria-label="Asia" 
-          />
-          <path
-            d="M 450 300 L 550 300 L 550 400 L 450 400 Z"
-            fill="#2ECC71"
-            className="opacity-70 hover:opacity-100 transition-opacity"
-            aria-label="Africa" 
-          />
-          <path
-            d="M 700 350 L 800 350 L 800 450 L 700 450 Z"
-            fill="#3498DB"
-            className="opacity-70 hover:opacity-100 transition-opacity"
-            aria-label="Australia" 
-          />
-        </svg>
+          {suppliers.map((supplier, index) => (
+            <Marker key={index} position={supplier.location}>
+              <Popup>{supplier.name}</Popup>
+            </Marker>
+          ))}
+        </MapContainer>
       </CardContent>
     </Card>
   )

@@ -13,68 +13,78 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
-const transactions = [
-  {
-    date: "09/09/24",
-    description: "Awais (MUX retailer)",
-    voucherNo: "0420",
-    debit: "0 RS",
-    credit: "5000 RS",
-    balance: "5000 RS",
-  },
-  {
-    date: "09/09/24",
-    description: "Moosa (ISL retailer)",
-    voucherNo: "0110",
-    debit: "15000 RS",
-    credit: "0 RS",
-    balance: "15000 RS",
-  },
-]
+interface Supplier {
+  _id: string
+  name: string
+  email: string
+  phone: string
+  address: string
+  city: string
+  state: string
+  country: string
+}
 
 export function SupplierLedger() {
+  const [suppliers, setSuppliers] = useState<Supplier[]>([])
+
+  // Fetch suppliers data from the API when component mounts
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/suppliers")
+        setSuppliers(response.data) // Set supplier data into state
+      } catch (error) {
+        console.error("Error fetching suppliers:", error)
+      }
+    }
+
+    fetchSuppliers()
+  }, [])
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-blue-900">Customer Ledger</CardTitle>
-        <Button variant="outline" className="w-[200px]  px-4 py-2 text-lg bg-green-600 hover:bg-green-700 text-white hover:text-white rounded-full transform hover:scale-110 transition-all duration-300 ">Manage Supplier</Button>
+        <CardTitle className="text-blue-900">Supplier Ledger</CardTitle>
+        <Button
+          variant="outline"
+          className="w-[200px]  px-4 py-2 text-lg bg-green-600 hover:bg-green-700 text-white hover:text-white rounded-full transform hover:scale-110 transition-all duration-300 "
+        >
+          Manage Supplier
+        </Button>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-blue-900">Date</TableHead>
-              <TableHead className="text-blue-900">Description</TableHead>
-              <TableHead className="text-blue-900">Voucher no.</TableHead>
-              <TableHead className="text-blue-900">Debit</TableHead>
-              <TableHead className="text-blue-900">Credit</TableHead>
-              <TableHead className="text-blue-900">Balance</TableHead>
+              <TableHead className="text-blue-900">No.</TableHead> {/* Sequential number header */}
+              <TableHead className="text-blue-900">Name</TableHead>
+              <TableHead className="text-blue-900">Email</TableHead>
+              <TableHead className="text-blue-900">Phone</TableHead>
+              <TableHead className="text-blue-900">Address</TableHead>
+              <TableHead className="text-blue-900">City</TableHead>
+              <TableHead className="text-blue-900">State</TableHead>
+              <TableHead className="text-blue-900">Country</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {transactions.map((transaction) => (
-              <TableRow key={transaction.voucherNo}>
-                <TableCell>{transaction.date}</TableCell>
-                <TableCell>{transaction.description}</TableCell>
-                <TableCell>{transaction.voucherNo}</TableCell>
-                <TableCell>{transaction.debit}</TableCell>
-                <TableCell>{transaction.credit}</TableCell>
-                <TableCell>{transaction.balance}</TableCell>
+            {suppliers.map((supplier, index) => (
+              <TableRow key={supplier._id}>
+                <TableCell>{index + 1}</TableCell> {/* Display sequential number */}
+                <TableCell>{supplier.name}</TableCell>
+                <TableCell>{supplier.email}</TableCell>
+                <TableCell>{supplier.phone}</TableCell>
+                <TableCell>{supplier.address}</TableCell>
+                <TableCell>{supplier.city}</TableCell>
+                <TableCell>{supplier.state}</TableCell>
+                <TableCell>{supplier.country}</TableCell>
               </TableRow>
             ))}
-            <TableRow>
-              <TableCell colSpan={3} className="font-bold text-blue-900">
-                Grand Total
-              </TableCell>
-              <TableCell className="font-bold">15000 RS</TableCell>
-              <TableCell className="font-bold">5,000 RS</TableCell>
-              <TableCell className="font-bold text-blue-900">20,000 RS</TableCell>
-            </TableRow>
           </TableBody>
         </Table>
       </CardContent>
     </Card>
   )
 }
-
