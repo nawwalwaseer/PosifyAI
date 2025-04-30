@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const CustomerSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  phone: String
-});
-module.exports = mongoose.model('Customer', CustomerSchema);
+
+// Schema that allows dynamic keys
+const customerSchema = new mongoose.Schema({}, { strict: false });
+
+module.exports = mongoose.model('Customer', customerSchema);

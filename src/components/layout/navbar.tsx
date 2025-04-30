@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Bell, BotMessageSquare } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import NavbarPanda from "@/images/PandaNavbar.jpg";
+// import NavbarPanda from "@/images/PandaNavbar.jpg";
+import { MdPointOfSale } from "react-icons/md";
+
 
 export function DashboardNavbar({
   showMoreAccountsButton = false,
@@ -16,47 +18,39 @@ export function DashboardNavbar({
   const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
-    // Get user info from localStorage (assuming it's set during login)
-    const storedUser = localStorage.getItem('users');
+    const storedUser = localStorage.getItem("user"); // ✅ match with login.tsx
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      setUserName(user.firstName); // Set firstName for display
-    } else {
-      // If not found in localStorage, fetch from the backend
-      const fetchUserDetails = async () => {
-        try {
-          // Fetch the user details using userId or any other method based on your route
-          const userId = "680e1e07df477da3da95f76f";  // Replace with actual userId or fetch from localStorage/token
-          const response = await fetch(`http://localhost:5000/api/user-details?userId=${userId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            setUserName(data.firstName); // Set firstName from the API response
-          } else {
-            console.error('Failed to fetch user details');
-          }
-        } catch (error) {
-          console.error('Error fetching user details:', error);
-        }
-      };
-
-      fetchUserDetails(); // Call this to fetch data after login
+      if (user.firstName) {
+        setUserName(user.firstName);
+      } else {
+        // fallback if firstName not in localStorage
+        fetchUserDetails(user.id); // ensure `user.id` exists
+      }
     }
   }, []);
+
+  const fetchUserDetails = async (userId: string) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/user-details?userId=${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUserName(data.firstName);
+      } else {
+        console.error("Failed to fetch user details");
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  };
 
   return (
     <header className="flex h-16 items-center justify-between border-b px-6">
       <h1 className="text-2xl font-semibold text-blue-900">
-        Welcome Back{userName ? `, ${userName}` : ''}
+        Welcome Back{userName ? `, ${userName}` : ""}
       </h1>
 
       <div className="flex items-center gap-4">
-        {/* Buttons */}
         {location.pathname !== "/supportGenie" && (
           <Button variant="outline" size="sm" className="bg-green-600 text-white hover:bg-green-700 rounded-full">
             <Link to="/supportGenie" className="flex items-center">
@@ -92,16 +86,10 @@ export function DashboardNavbar({
           </span>
         </Button>
 
-        {/* Avatar + User Info */}
         <div className="flex items-center gap-2">
-          <Avatar>
-            <AvatarImage alt="User" src={NavbarPanda} />
-            <AvatarFallback>{userName ? userName.charAt(0).toUpperCase() : 'U'}</AvatarFallback>
-          </Avatar>
+        <MdPointOfSale className="h-8 w-8 text-blue-900" />
           <div className="text-sm">
-            <p className="font-medium text-blue-900">
-              {userName || 'Username'}
-            </p>
+            <p className="font-medium text-blue-900">{userName || "Username"}</p>
             <p className="text-muted-foreground text-blue-900">Admin</p>
           </div>
         </div>

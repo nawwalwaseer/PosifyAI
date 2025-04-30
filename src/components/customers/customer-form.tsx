@@ -1,4 +1,3 @@
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -58,21 +57,59 @@ export function CustomerForm() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const customerData = {
+      name: values.name,
+      mobileNo: values.mobileNo,
+      email: values.email,
+      email2: values.email2 || 'N/A',
+      phone: values.phone,
+      contact: values.contact,
+      address: values.address,
+      address2: values.address2 || 'N/A',
+      fax: values.fax || 'N/A',
+      city: values.city,
+      state: values.state,
+      zipCode: values.zipCode,
+      country: values.country,
+      balance: values.balance,
+    }
+
+    try {
+      // Send POST request to save customer data
+      const response = await fetch('http://localhost:5000/api/saveCustomer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(customerData),
+      })
+
+      if (response.ok) {
+        alert('Customer data saved successfully!');
+      } else {
+        alert('Failed to save customer data!');
+      }
+    } catch (error) {
+      console.error('Error saving customer data:', error);
+      alert('Error saving customer data!');
+    }
   }
 
   return (
-    <Card className="w-80% ">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2  ">
+    <Card className="w-80%">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl font-bold text-blue-900">Add Customer</CardTitle>
-        <Button type="submit" form="customer-form" className="bg-blue-600 text-white hover:bg-blue-700 hover:text-white rounded-full transform hover:scale-110 transition-all duration-300">
+        <Button 
+          type="submit" 
+          form="customer-form" 
+          className="bg-blue-600 text-white hover:bg-blue-700 hover:text-white rounded-full transform hover:scale-110 transition-all duration-300">
           Save
         </Button>
       </CardHeader>
       <CardContent>
-        <Form {...form} >
-          <form id="customer-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
+        <Form {...form}>
+          <form id="customer-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -263,4 +300,3 @@ export function CustomerForm() {
     </Card>
   )
 }
-
