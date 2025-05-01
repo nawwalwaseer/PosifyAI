@@ -27,9 +27,10 @@ export default function SalesPage() {
               </div>
 
               {/* Right Content */}
-              <div className="sticky top-6">
-                <CustomerSatisfaction />
-              </div>
+              {/* <div className="sticky top-6">
+                {/* <CustomerSatisfaction /> */}
+              {/* </div>  */}
+              
             </div>
           </main>
         </div>

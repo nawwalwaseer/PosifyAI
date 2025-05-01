@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Eye, FileEdit, Printer, Trash2 } from 'lucide-react';
+import { FileEdit, Trash2, Copy } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,7 +32,7 @@ export function SalesTable() {
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/sales'); // Add the full URL here
+        const response = await axios.get('http://localhost:5000/api/sales');
         setSales(response.data.sales);
       } catch (error) {
         console.error('Error fetching sales:', error);
@@ -47,6 +47,19 @@ export function SalesTable() {
     const amount = parseInt(sale.totalAmount.replace(/\D/g, ""), 10) || 0;
     return acc + amount;
   }, 0);
+
+  // Handle copy row to clipboard
+  const handleCopyRow = (sale: Sale) => {
+    const saleDetails = `Invoice No: ${sale.invoiceNo}\nSales By: ${sale.salesBy}\nCustomer Name: ${sale.customerName}\nDate: ${sale.date}\nTotal Amount: ${sale.totalAmount}`;
+    navigator.clipboard.writeText(saleDetails)
+      .then(() => alert('Sale details copied to clipboard!'))
+      .catch((err) => console.error('Failed to copy:', err));
+  };
+
+  // Handle delete row
+  const handleDeleteRow = (id: string) => {
+    setSales((prevSales) => prevSales.filter((sale) => sale.id !== id));
+  };
 
   return (
     <Card>
@@ -77,16 +90,18 @@ export function SalesTable() {
                 <TableCell className="text-center">{sale.totalAmount}</TableCell>
                 <TableCell className="text-center">
                   <div className="flex justify-center gap-1">
-                    <Button size="icon" variant="ghost">
-                      <Eye className="h-4 w-4" />
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => handleCopyRow(sale)}
+                    >
+                      <Copy className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="ghost">
-                      <FileEdit className="h-4 w-4" />
-                    </Button>
-                    <Button size="icon" variant="ghost">
-                      <Printer className="h-4 w-4" />
-                    </Button>
-                    <Button size="icon" variant="ghost">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => handleDeleteRow(sale.id)}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -105,3 +120,7 @@ export function SalesTable() {
     </Card>
   );
 }
+
+
+
+
