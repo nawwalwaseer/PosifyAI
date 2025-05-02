@@ -17,7 +17,8 @@ const productRoutes = require("./routes/products.js");
 const userDetailsRoute = require('./routes/userDetails'); // Add the new route
 const purchaseRoutes = require('./routes/purchase.js')
 const supplierRoutes = require("./routes/supplierRoutes");
-const inventoryRoutes = require("./routes/inventoryRoutes")
+const inventoryRoutes = require("./routes/inventoryRoutes");
+const posRoutes = require("./routes/pos");
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api', userDetailsRoute);
 app.use("/api/purchases", purchaseRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/inventory", inventoryRoutes);
+app.use("/api/pos", posRoutes);
 
 // Root Route (Just a check to ensure the server is running)
 app.get('/', (req, res) => {
